@@ -2,7 +2,7 @@ import pygame
 import os
 import math
 import random
-from disc import Disc
+from Sample import Vector2
 import colorsys
 
 os.environ["SDL_VIDEO_CENTERED"]='1'
@@ -16,6 +16,7 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 fps = 60
 
+screen_offset = 2
 r = 40
 k = 30
 
@@ -23,17 +24,17 @@ w = r/math.sqrt(2)
 
 x = random.randint(50, width-50)
 y = random.randint(50, height-50)
-position = Disc(x, y)
+position = Vector2(x, y)
 
-cl = math.floor(x/w)
-rw = math.floor(y/w)
-columns = math.floor(width/w)
-rows = math.floor(height/w)
+cl = math.ceil(x/w)
+rw = math.ceil(y/w)
+columns = math.ceil(width/w)
+rows = math.ceil(height/w)
 active_list = []
-grid = [i for i in range(math.floor(columns * rows))]
-for i in range(math.floor(columns * rows)):
+grid = [i for i in range(math.ceil(columns * rows))]
+for i in range(math.ceil(columns * rows)):
     grid[i] = None
-grid[math.floor(cl+rw*columns)] = position
+grid[math.ceil(cl+rw*columns)] = position
 active_list.append(position)
 
 def list_splice(target, start, delete_count=None, *items):
@@ -60,29 +61,24 @@ while run:
         current_position = active_list[randIndex]
         found = False
         for n in range(k):
-            x_offset = random.uniform(-1, 1)
-            y_offset = random.uniform(-1, 1)
-            magnitude = math.sqrt(x_offset * x_offset + y_offset * y_offset)
+            offset = Vector2(random.uniform(-2, 2), random.uniform(-2, 2))
             new_magnitude = random.randint(r, r*2)
-            normal_vx = x_offset /magnitude
-            normal_vy = y_offset /magnitude
-            vx = normal_vx * new_magnitude
-            vy = normal_vy * new_magnitude
-            vx += current_position.x
-            vy += current_position.y
+            offset = offset.set_magnitude(new_magnitude)
+            offset.x = offset.x + current_position.x
+            offset.y = offset.y + current_position.y
 
-            col = math.floor(vx/w)
-            row = math.floor(vy/w)
+            col = math.ceil(offset.x/w)
+            row = math.ceil(offset.y/w)
 
-            if row < rows and col < columns and row > 0 and col > 0:
+            if row < rows-screen_offset and col < columns-screen_offset and row > screen_offset and col > screen_offset:
                 checker = True
                 for i in range(-1, 2):
                     for j in range(-1, 2):
-                        index = math.floor( col + i + (row+j) * columns)
+                        index = math.ceil( col + i + (row+j) * columns)
                         if index <= len(grid)-1:
                             neighbour = grid[index];
                             if neighbour is not None:
-                                dist = math.sqrt((vx - neighbour.x) ** 2 + (vy - neighbour.y) ** 2)
+                                dist = math.sqrt((offset.x - neighbour.x) ** 2 + (offset.y - neighbour.y) ** 2)
                                 if dist < r:
                                     checker = False
                         else:
@@ -90,17 +86,17 @@ while run:
 
                 if checker is True:
                     found = True
-                    grid[math.floor(col + row * columns)] = Disc(vx, vy)
-                    active_list.append(Disc(vx, vy))
+                    grid[math.ceil(col + row * columns)] = Vector2(offset.x, offset.y)
+                    active_list.append(Vector2(offset.x, offset.y))
                     break
         if found is not True:
             list_splice(active_list, randIndex+1, 1)
 
     for cell in grid:
         if cell is not None:
-            pygame.draw.circle(screen, white, (math.floor(cell.x), math.floor(cell.y)), 16)
+            pygame.draw.circle(screen, white, (math.ceil(cell.x), math.ceil(cell.y)), 16)
     for disk in active_list:
-        pygame.draw.circle(screen, hsv_to_rgb(hue, 1, 1), (math.floor(disk.x), math.floor(disk.y)), 16)
+        pygame.draw.circle(screen, hsv_to_rgb(hue, 1, 1), (math.ceil(disk.x), math.ceil(disk.y)), 16)
     pygame.display.update()
     hue += 0.0009
 pygame.quit()
