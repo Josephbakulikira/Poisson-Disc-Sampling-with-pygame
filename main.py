@@ -75,14 +75,13 @@ while run:
                 for i in range(-1, 2):
                     for j in range(-1, 2):
                         index = math.ceil( col + i + (row+j) * columns)
-                        if index <= len(grid)-1:
-                            neighbour = grid[index];
-                            if neighbour is not None:
-                                dist = math.sqrt((offset.x - neighbour.x) ** 2 + (offset.y - neighbour.y) ** 2)
-                                if dist < r:
-                                    checker = False
-                        else:
-                            checker = False
+
+                        neighbour = grid[index];
+                        if neighbour is not None:
+                            dist = math.sqrt((offset.x - neighbour.x) ** 2 + (offset.y - neighbour.y) ** 2)
+                            if dist < r:
+                                checker = False
+
 
                 if checker is True:
                     found = True
