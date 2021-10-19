@@ -1,24 +1,22 @@
 import pygame
-import os
 import math
 import random
 from Sample import Vector2
 import colorsys
 
-os.environ["SDL_VIDEO_CENTERED"]='1'
-
 width, height = 1920, 1080
 size=(width, height)
 black, white, green = (10, 10, 10), (230, 230, 230), (95, 255, 1)
 hue = 0
+
 pygame.init()
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 fps = 60
 
 screen_offset = 2
-r = 40
-k = 30
+r = 40 
+k = 20
 
 w = r/math.sqrt(2)
 
@@ -26,12 +24,14 @@ x = random.randint(50, width-50)
 y = random.randint(50, height-50)
 position = Vector2(x, y)
 
-cl = math.ceil(x/w)
-rw = math.ceil(y/w)
-columns = math.ceil(width/w)
-rows = math.ceil(height/w)
+cl = x // w
+rw = y // w
+columns = width // w
+rows = height // w
 active_list = []
+
 grid = [i for i in range(math.ceil(columns * rows))]
+
 for i in range(math.ceil(columns * rows)):
     grid[i] = None
 grid[math.ceil(cl+rw*columns)] = position
@@ -53,9 +53,14 @@ run = True
 while run:
     clock.tick(fps)
     screen.fill(black)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                run = False
+
     if len(active_list) > 0:
         randIndex = random.randint(0, len(active_list)-1)
         current_position = active_list[randIndex]
@@ -94,8 +99,10 @@ while run:
     for cell in grid:
         if cell is not None:
             pygame.draw.circle(screen, white, (math.ceil(cell.x), math.ceil(cell.y)), 16)
+
     for disk in active_list:
         pygame.draw.circle(screen, hsv_to_rgb(hue, 1, 1), (math.ceil(disk.x), math.ceil(disk.y)), 16)
-    pygame.display.update()
+
+    pygame.display.flip()
     hue += 0.0009
 pygame.quit()
