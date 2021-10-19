@@ -2,7 +2,7 @@
 ## subscribe to my youtube channel: [Auctux](https://www.youtube.com/channel/UCjPk9YDheKst1FlAf_KSpyA)
 ---
 ## Requirements
-    `Pygame` pip install pygame
+> `Pygame` pip install pygame
 ---
 
 ### enjoy the spaghetti code
