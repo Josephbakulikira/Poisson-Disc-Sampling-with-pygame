@@ -1,5 +1,5 @@
 # Poisson-Disc-Sampling-with-pygame
-## subscribe to my youtube channel: [Auctux](https://www.youtube.com/channel/UCjPk9YDheKst1FlAf_KSpyA)
+Subscribe to my youtube channel: [Auctux](https://www.youtube.com/channel/UCjPk9YDheKst1FlAf_KSpyA)
 ---
 ## Requirements
 > `Pygame` pip install pygame
